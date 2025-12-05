@@ -222,9 +222,9 @@
             background: rgba(15, 23, 42, 0.75);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
-            border-radius: 32px;
+            border-radius: clamp(20px, 4vw, 32px);
             border: 2px solid rgba(139, 92, 246, 0.3);
-            padding: 30px 50px;
+            padding: clamp(20px, 3vh, 30px) clamp(25px, 4vw, 50px);
             box-shadow: 
                 0 30px 120px rgba(0, 0, 0, 0.6),
                 0 0 80px rgba(139, 92, 246, 0.2),
@@ -235,6 +235,8 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
+            gap: 0;
             animation: containerGlow 4s ease-in-out infinite;
             margin: 0 auto;
             box-sizing: border-box;
@@ -283,20 +285,23 @@
         /* Icon Container */
         .icon-container {
             text-align: center;
-            margin-bottom: 10px;
+            margin: 0 auto clamp(10px, 1.8vh, 14px) auto;
             position: relative;
             z-index: 2;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-shrink: 0;
+            width: 100%;
+            max-width: 100%;
         }
 
         .deployment-icon {
             position: relative;
-            width: clamp(70px, 10vw, 100px);
-            height: clamp(70px, 10vw, 100px);
-            display: inline-block;
+            width: clamp(50px, 12vw, 100px);
+            height: clamp(50px, 12vw, 100px);
+            display: block;
+            margin: 0 auto;
         }
 
         .icon-circle {
@@ -377,7 +382,7 @@
             font-size: clamp(1.2rem, 4vw, 2.2rem);
             font-weight: 900;
             text-align: center;
-            margin-bottom: clamp(8px, 1.5vh, 12px);
+            margin: 0 auto clamp(10px, 1.8vh, 14px) auto;
             line-height: 1.2;
             letter-spacing: -0.01em;
             position: relative;
@@ -394,6 +399,9 @@
             word-wrap: break-word;
             hyphens: auto;
             flex-shrink: 0;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
         h1 span {
@@ -440,8 +448,8 @@
                 width: 100% !important;
                 max-width: 500px !important;
                 height: auto !important;
-                margin: 0 auto 20px auto !important;
-                padding: 0 10px !important;
+                margin: 0 auto clamp(12px, 2vh, 16px) auto !important;
+                padding: 0 !important;
                 box-sizing: border-box !important;
                 opacity: 0.9 !important;
                 filter: drop-shadow(0 0 60px rgba(139, 92, 246, 0.6)) !important;
@@ -456,8 +464,8 @@
                 width: 17.5rem !important;
                 max-width: 400px !important;
                 height: auto !important;
-                margin: 0 auto 15px auto !important;
-                padding: 0 15px !important;
+                margin: 0 auto clamp(10px, 1.8vh, 14px) auto !important;
+                padding: 0 !important;
                 box-sizing: border-box !important;
                 opacity: 0.9 !important;
                 filter: drop-shadow(0 0 80px rgba(139, 92, 246, 0.7)) !important;
@@ -469,8 +477,8 @@
         @media (max-width: 480px) {
             .content-mobile-image {
                 max-width: 350px !important;
-                margin: 0 auto 0px auto !important;
-                padding: 0 10px !important;
+                margin: 0 auto clamp(8px, 1.5vh, 12px) auto !important;
+                padding: 0 !important;
                 opacity: 0.9 !important;
             }
         }
@@ -515,7 +523,7 @@
         .content {
             line-height: clamp(1.4, 2vw, 1.6);
             font-size: clamp(0.8rem, 2.5vw, 0.95rem);
-            margin-bottom: clamp(8px, 1.5vh, 10px);
+            margin: 0 auto clamp(6px, 1vh, 8px) auto;
             text-align: center;
             font-weight: 600;
             position: relative;
@@ -534,6 +542,9 @@
             justify-content: flex-start;
             align-items: center;
             min-height: 0;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
         .content p {
@@ -553,9 +564,9 @@
         .eta-highlight {
             background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(139, 92, 246, 0.25) 100%);
             border: 2px solid rgba(139, 92, 246, 0.4);
-            border-radius: 20px;
-            padding: 20px 30px;
-            margin: 10px auto 8px;
+            border-radius: clamp(16px, 3vw, 20px);
+            padding: clamp(14px, 2.5vh, 20px) clamp(20px, 4vw, 30px);
+            margin: 0 auto clamp(8px, 1.5vh, 12px) auto;
             position: relative;
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -566,6 +577,9 @@
             z-index: 2;
             animation: etaGlow 4s ease-in-out infinite;
             flex-shrink: 0;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
         @keyframes etaGlow {
@@ -597,15 +611,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 18px;
+            gap: clamp(10px, 2.5vw, 18px);
             position: relative;
             z-index: 1;
+            width: 100%;
+            max-width: 100%;
+            flex-wrap: wrap;
+            box-sizing: border-box;
         }
 
         .eta-icon {
-            font-size: 2.2rem;
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
             animation: pulse 2s ease-in-out infinite;
             filter: drop-shadow(0 4px 12px rgba(139, 92, 246, 0.4));
+            flex-shrink: 0;
         }
 
         @keyframes pulse {
@@ -616,7 +635,11 @@
         .eta-text {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: clamp(4px, 1vh, 8px);
+            flex: 1;
+            min-width: 0;
+            align-items: center;
+            text-align: center;
         }
 
         .eta-label {
@@ -657,7 +680,7 @@
         .closing-line {
             text-align: center;
             font-size: clamp(0.75rem, 2.2vw, 0.95rem);
-            margin-top: clamp(6px, 1.2vh, 8px);
+            margin: clamp(6px, 1.2vh, 8px) auto 0 auto;
             font-style: italic;
             font-weight: 700;
             position: relative;
@@ -670,6 +693,9 @@
             animation: textGradient 7s ease infinite;
             text-shadow: 0 0 20px rgba(148, 163, 184, 0.3);
             flex-shrink: 0;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
         /* Floating Setting Icons */
@@ -1228,8 +1254,16 @@
             }
 
             .eta-highlight {
-                padding: 18px 25px;
-                margin: 8px auto 6px;
+                padding: clamp(16px, 2.5vh, 18px) clamp(20px, 3.5vw, 25px);
+                margin: clamp(6px, 1.2vh, 8px) auto clamp(4px, 1vh, 6px);
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+
+            .eta-content {
+                gap: clamp(10px, 2.5vw, 15px);
+                width: 100%;
             }
 
             .eta-icon {
@@ -1308,12 +1342,13 @@
             }
 
             .icon-container {
-                margin-bottom: 8px;
+                margin-bottom: clamp(6px, 1.2vh, 8px);
+                width: 100%;
             }
 
             .deployment-icon {
-                width: 60px;
-                height: 60px;
+                width: clamp(50px, 10vw, 60px);
+                height: clamp(50px, 10vw, 60px);
             }
 
             h1 {
@@ -1335,7 +1370,7 @@
                 font-size: 0.85rem;
                 font-weight: 500;
                 line-height: 1.5;
-                margin-bottom: 8px;
+                margin-bottom: clamp(2px, 0.5vh, 4px);
                 padding: 0;
             }
 
@@ -1344,15 +1379,27 @@
             }
 
             .eta-highlight {
-                padding: 14px 16px;
-                margin: 8px auto 6px;
-                border-radius: 16px;
+                padding: clamp(12px, 2vh, 14px) clamp(14px, 3vw, 16px);
+                margin: clamp(2px, 0.5vh, 4px) auto clamp(4px, 1vh, 6px);
+                border-radius: clamp(14px, 2.5vw, 16px);
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
             }
 
             .eta-content {
                 flex-direction: row;
-                gap: 10px;
+                gap: clamp(8px, 2vw, 12px);
                 align-items: center;
+                justify-content: center;
+                width: 100%;
+            }
+
+            .eta-text {
+                align-items: flex-start;
+                text-align: left;
+                flex: 1;
+                min-width: 0;
             }
 
             .eta-icon {
@@ -1462,7 +1509,7 @@
                 font-size: 0.8rem;
                 font-weight: 500;
                 line-height: 1.4;
-                margin-bottom: 6px;
+                margin-bottom: clamp(2px, 0.5vh, 4px);
                 padding: 0;
             }
 
@@ -1471,13 +1518,22 @@
             }
 
             .eta-highlight {
-                padding: 12px 14px;
-                margin: 6px auto 4px;
-                border-radius: 14px;
+                padding: clamp(10px, 1.8vh, 12px) clamp(12px, 2.5vw, 14px);
+                margin: clamp(2px, 0.5vh, 4px) auto clamp(3px, 0.8vh, 4px);
+                border-radius: clamp(12px, 2vw, 14px);
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
             }
 
             .eta-content {
-                gap: 8px;
+                gap: clamp(6px, 1.5vw, 8px);
+                width: 100%;
+            }
+
+            .eta-text {
+                align-items: flex-start;
+                text-align: left;
             }
 
             .eta-icon {
