@@ -1,5 +1,5 @@
 # Use official Nginx image as base
-FROM nginx:alpine
+FROM 163742846785.dkr.ecr.ap-south-1.amazonaws.com/nginx-alpine
 
 # Remove default nginx website
 RUN rm -rf /usr/share/nginx/html/*
