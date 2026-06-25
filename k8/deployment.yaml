@@ -13,7 +13,7 @@ spec:
 
   selector:
     matchLabels:
-      app: maintenance-page
+      app: maintenance
 
   strategy:
     type: RollingUpdate
@@ -24,7 +24,7 @@ spec:
   template:
     metadata:
       labels:
-        app: maintenance-page
+        app: maintenance
         component: web
         environment: prod
 

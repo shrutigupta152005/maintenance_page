@@ -5,7 +5,7 @@ metadata:
   namespace: maintenance
 spec:
   selector:
-    app: maintenance-page
+    app: maintenance
   ports:
     - port: 80
       targetPort: 80
