@@ -4,7 +4,6 @@ metadata:
   name: maintenance-ingress
   namespace: maintenance
   annotations:
-    kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/group.name: shared-alb
     alb.ingress.kubernetes.io/group.order: '100'
     alb.ingress.kubernetes.io/scheme: internet-facing
