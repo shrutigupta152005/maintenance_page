@@ -9,7 +9,7 @@ metadata:
     environment: prod
 
 spec:
-  replicas: 2
+  replicas: 1
 
   selector:
     matchLabels:
@@ -29,9 +29,6 @@ spec:
         environment: prod
 
     spec:
-      nodeSelector:
-        kubernetes.io/hostname: ip-10-0-11-94.ec2.internal
-
       containers:
         - name: maintenance-page
           image: 027265528423.dkr.ecr.us-east-1.amazonaws.com/maintenance-page:latest
@@ -58,7 +55,7 @@ spec:
 
           readinessProbe:
             httpGet:
-              path: /
+              path: /health
               port: http
             initialDelaySeconds: 5
             periodSeconds: 10
@@ -67,7 +64,7 @@ spec:
 
           livenessProbe:
             httpGet:
-              path: /
+              path: /health
               port: http
             initialDelaySeconds: 15
             periodSeconds: 20

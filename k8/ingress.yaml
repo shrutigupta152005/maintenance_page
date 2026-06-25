@@ -4,6 +4,7 @@ metadata:
   name: maintenance-ingress
   namespace: maintenance
   annotations:
+    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/upstream-healthcheck: "true"
     nginx.ingress.kubernetes.io/upstream-healthcheck-path: "/health"
     nginx.ingress.kubernetes.io/upstream-healthcheck-interval: "10"

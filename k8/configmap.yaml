@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: maintenance-config
+  name: maintenance-page-config
   namespace: maintenance
 data:
-  ENV: "dev"
+  ENV: "production"
