@@ -49,6 +49,10 @@ phases:
   pre_build:
     commands:
       - echo "Logging in to Amazon ECR"
+      - echo "Debug: STS identity"
+      - aws sts get-caller-identity || true
+      - echo "Debug: try to get ECR authorization token (will show permission error if any)"
+      - aws ecr get-authorization-token --region "$AWS_REGION" || true
       - aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
       - export IMAGE_TAG_SHA=${CODEBUILD_RESOLVED_SOURCE_VERSION:0:8}
       - export IMAGE_TAG_LATEST=latest
@@ -65,8 +69,8 @@ phases:
       - docker push "${ECR_REPOSITORY}:${IMAGE_TAG_LATEST}"
       - printf '[{"name":"%s","imageUri":"%s:%s"}]' "${CONTAINER_NAME}" "${ECR_REPOSITORY}" "${IMAGE_TAG_SHA}" > imagedefinitions.json
       - aws eks update-kubeconfig --region "$AWS_REGION" --name "$CLUSTER_NAME"
-      - cd k8 && kustomize edit set image "${ECR_REPOSITORY}:latest=${ECR_REPOSITORY}:${IMAGE_TAG_SHA}" && cd ..
       - kubectl apply -k k8/
+      - kubectl -n "${K8S_NAMESPACE}" set image "deployment/${DEPLOYMENT_NAME}" "${CONTAINER_NAME}=${ECR_REPOSITORY}:${IMAGE_TAG_SHA}"
       - kubectl -n "${K8S_NAMESPACE}" rollout status "deployment/${DEPLOYMENT_NAME}" --timeout=300s
 artifacts:
   files:

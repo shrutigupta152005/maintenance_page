@@ -25,5 +25,6 @@ commonAnnotations:
 
 # Images to manage - must match the image reference in deployment.yaml
 images:
-  - name: 027265528423.dkr.ecr.us-east-1.amazonaws.com/maintenance-page
+  - name: maintenance-page
+    newName: 027265528423.dkr.ecr.us-east-1.amazonaws.com/maintenance-page
     newTag: latest
