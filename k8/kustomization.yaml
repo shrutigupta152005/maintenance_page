@@ -17,7 +17,6 @@ resources:
 # Common labels applied to all resources
 commonLabels:
   app: maintenance-page
-  version: v1
 
 # Common annotations applied to all resources
 commonAnnotations:
