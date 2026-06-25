@@ -25,7 +25,6 @@ phases:
       docker: 19
     commands:
       - echo "Install helpers: aws CLI v2, kubectl, eksctl, kustomize (if missing)"
-      # aws CLI v2 is usually preinstalled on CodeBuild standard images.
       - |
         if ! command -v kubectl >/dev/null 2>&1; then
           echo "Installing kubectl..."
