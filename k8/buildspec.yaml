@@ -12,8 +12,6 @@ env:
     DOMAIN: "page.tledtech.com"
 phases:
   install:
-    runtime-versions:
-      docker: 19
     commands:
       - echo "Installing kubectl eksctl"
       - |
