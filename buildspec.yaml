@@ -80,7 +80,7 @@ phases:
       - echo "Configuring kubectl for EKS cluster ${CLUSTER_NAME}..."
       - aws eks update-kubeconfig --region "$AWS_REGION" --name "$CLUSTER_NAME"
       - echo "Updating Kustomization with new image tag..."
-      - cd k8 && kustomize edit set image "maintenance-page=${ECR_REPOSITORY}:${IMAGE_TAG_SHA}" && cd ..
+      - cd k8 && kustomize edit set image "${ECR_REPOSITORY}:latest=${ECR_REPOSITORY}:${IMAGE_TAG_SHA}" && cd ..
       - echo "Applying Kustomize manifests to cluster..."
       - kubectl apply -k k8/
       - echo "Waiting for rollout status (timeout 300s)..."
