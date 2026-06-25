@@ -7,6 +7,7 @@ namespace: maintenance
 # Resources to include
 resources:
   - namespace.yaml
+  - serviceaccount.yaml
   - configmap.yaml
   - secret.yaml
   - deployment.yaml
@@ -23,37 +24,7 @@ commonAnnotations:
   managed-by: kustomize
   environment: production
 
-# Images to manage
+# Images to manage - must match the image reference in deployment.yaml
 images:
-  - name: maintenance-page
-    newName: 027265528423.dkr.ecr.us-east-1.amazonaws.com/maintenance-page
+  - name: 027265528423.dkr.ecr.us-east-1.amazonaws.com/maintenance-page
     newTag: latest
-
-# Replicas override
-replicas:
-  - name: maintenance-page
-    count: 2
-
-# Vars for variable substitution
-vars:
-  - name: NAMESPACE
-    objref:
-      kind: Namespace
-      name: maintenance
-      apiVersion: v1
-    fieldref:
-      fieldpath: metadata.name
-  - name: SERVICE_NAME
-    objref:
-      kind: Service
-      name: maintenance-service
-      apiVersion: v1
-    fieldref:
-      fieldpath: metadata.name
-  - name: INGRESS_HOST
-    objref:
-      kind: Ingress
-      name: maintenance-ingress
-      apiVersion: networking.k8s.io/v1
-    fieldref:
-      fieldpath: spec.rules[0].host

@@ -1,5 +1,4 @@
 version: 0.2
-
 env:
   variables:
     AWS_REGION: us-east-1
@@ -11,76 +10,50 @@ env:
     DEPLOYMENT_NAME: "maintenance-page"
     CONTAINER_NAME: "maintenance-page"
     DOMAIN: "page.tledtech.com"
-    KUSTOMIZE_VERSION: "5.0.0"
 phases:
   install:
     runtime-versions:
       docker: 19
     commands:
-      - echo "Install helpers: aws CLI v2, kubectl, eksctl, kustomize (if missing)"
+      - echo "Installing kubectl eksctl kustomize"
       - |
         if ! command -v kubectl >/dev/null 2>&1; then
-          echo "Installing kubectl..."
           curl -sSL --fail -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.24.10/2023-10-03/bin/linux/amd64/kubectl
           chmod +x kubectl
           mv kubectl /usr/local/bin/
-        else
-          echo "kubectl present: $(kubectl version --client --short || true)"
         fi
       - |
         if ! command -v eksctl >/dev/null 2>&1; then
-          echo "Installing eksctl..."
           curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
           mv /tmp/eksctl /usr/local/bin/
-        else
-          echo "eksctl present: $(eksctl version || true)"
         fi
       - |
         if ! command -v kustomize >/dev/null 2>&1; then
-          echo "Installing kustomize..."
           curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
           mv kustomize /usr/local/bin/
-        else
-          echo "kustomize present: $(kustomize version || true)"
         fi
-      - echo "Ensure Docker is available"
-      - docker version || true
   pre_build:
     commands:
-      - echo "Logging in to Amazon ECR..."
-      - aws --version
+      - echo "Logging in to Amazon ECR"
       - aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
-      - echo "Setting image tags"
       - export IMAGE_TAG_SHA=${CODEBUILD_RESOLVED_SOURCE_VERSION:0:8}
       - export IMAGE_TAG_LATEST=latest
-      - echo "IMAGE_TAG_SHA=$IMAGE_TAG_SHA"
   build:
     commands:
-      - echo "Building Docker image..."
+      - echo "Building Docker image"
       - docker build -t "${IMAGE_REPO_NAME}:${IMAGE_TAG_SHA}" -t "${IMAGE_REPO_NAME}:${IMAGE_TAG_LATEST}" .
-      - echo "Tagging image for ECR"
       - docker tag "${IMAGE_REPO_NAME}:${IMAGE_TAG_SHA}" "${ECR_REPOSITORY}:${IMAGE_TAG_SHA}"
       - docker tag "${IMAGE_REPO_NAME}:${IMAGE_TAG_LATEST}" "${ECR_REPOSITORY}:${IMAGE_TAG_LATEST}"
   post_build:
     commands:
-      - echo "Pushing images to ECR..."
+      - echo "Pushing images to ECR"
       - docker push "${ECR_REPOSITORY}:${IMAGE_TAG_SHA}"
       - docker push "${ECR_REPOSITORY}:${IMAGE_TAG_LATEST}"
-      - echo "Creating imagedefinitions.json for CodePipeline compatibility"
       - printf '[{"name":"%s","imageUri":"%s:%s"}]' "${CONTAINER_NAME}" "${ECR_REPOSITORY}" "${IMAGE_TAG_SHA}" > imagedefinitions.json
-      - cat imagedefinitions.json
-      - echo "Configuring kubectl for EKS cluster ${CLUSTER_NAME}..."
       - aws eks update-kubeconfig --region "$AWS_REGION" --name "$CLUSTER_NAME"
-      - echo "Updating Kustomization with new image tag..."
       - cd k8 && kustomize edit set image "${ECR_REPOSITORY}:latest=${ECR_REPOSITORY}:${IMAGE_TAG_SHA}" && cd ..
-      - echo "Applying Kustomize manifests to cluster..."
       - kubectl apply -k k8/
-      - echo "Waiting for rollout status (timeout 300s)..."
       - kubectl -n "${K8S_NAMESPACE}" rollout status "deployment/${DEPLOYMENT_NAME}" --timeout=300s
-      - echo "Deployment succeeded — showing deployment, pods and services:"
-      - kubectl -n "${K8S_NAMESPACE}" get deployment "${DEPLOYMENT_NAME}" -o wide || true
-      - kubectl -n "${K8S_NAMESPACE}" get pods -l "app=${DEPLOYMENT_NAME}" -o wide || kubectl -n "${K8S_NAMESPACE}" get pods -o wide
-      - kubectl -n "${K8S_NAMESPACE}" get svc -o wide
 artifacts:
   files:
     - imagedefinitions.json
