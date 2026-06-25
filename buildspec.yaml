@@ -1,11 +1,5 @@
 version: 0.2
-# Production-ready CodeBuild buildspec to build a Docker image, push to ECR,
-# update an EKS Deployment via Kustomize, wait for rollout and emit imagedefinitions.json.
-#
-# Notes:
-# - CodeBuild project must enable "Privileged" (to run Docker).
-# - Uses Kustomize for centralized Kubernetes configuration management.
-# - Use CodeBuild environment variables to override defaults in your project.
+
 env:
   variables:
     AWS_REGION: us-east-1
@@ -18,7 +12,6 @@ env:
     CONTAINER_NAME: "maintenance-page"
     DOMAIN: "page.tledtech.com"
     KUSTOMIZE_VERSION: "5.0.0"
-    # Short SHA produced from CodeBuild runtime var below in build stage
 phases:
   install:
     runtime-versions:
@@ -91,10 +84,3 @@ phases:
 artifacts:
   files:
     - imagedefinitions.json
-# Caches and secondary-artifacts can be added if desired.
-# Important operational notes (not executed by buildspec):
-# - Ensure the CodeBuild project has "Privileged" checked to allow Docker builds.
-# - Provide the CodeBuild service role the IAM policy included in project docs.
-# - Map the CodeBuild IAM role into the EKS cluster (see RBAC docs).
-# - Kustomize centrally manages all K8s resources in k8/ directory.
-# - Consider enabling Docker layer caching on the CodeBuild project for faster builds.
