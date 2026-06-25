@@ -14,7 +14,7 @@ phases:
   install:
     commands:
       - echo "Installing kubectl and eksctl"
-      - curl -sSL --fail -o /usr/local/bin/kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.24.10/2023-10-03/bin/linux/amd64/kubectl
+      - curl -sSL --fail -o /usr/local/bin/kubectl https://dl.k8s.io/release/v1.24.10/bin/linux/amd64/kubectl
       - chmod +x /usr/local/bin/kubectl
       - curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
       - mv /tmp/eksctl /usr/local/bin/
