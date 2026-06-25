@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maintenance-page
+  namespace: maintenance
+  labels:
+    app: maintenance-page
+    component: web
+    environment: prod
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: maintenance-page
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+
+  template:
+    metadata:
+      labels:
+        app: maintenance-page
+        component: web
+        environment: prod
+
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: ip-10-0-11-94.ec2.internal
+
+      containers:
+        - name: maintenance-page
+          image: 027265528423.dkr.ecr.us-east-1.amazonaws.com/maintenance-page:latest
+          imagePullPolicy: Always
+
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+
+          envFrom:
+            - configMapRef:
+                name: maintenance-page-config
+            - secretRef:
+                name: maintenance-page-secret
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+      restartPolicy: Always

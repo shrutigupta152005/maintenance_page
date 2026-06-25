@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: maintenance-ingress
+  namespace: maintenance
+  annotations:
+    nginx.ingress.kubernetes.io/upstream-healthcheck: "true"
+    nginx.ingress.kubernetes.io/upstream-healthcheck-path: "/health"
+    nginx.ingress.kubernetes.io/upstream-healthcheck-interval: "10"
+    nginx.ingress.kubernetes.io/upstream-healthcheck-timeout: "5"
+    nginx.ingress.kubernetes.io/upstream-healthcheck-unhealthy-threshold: "3"
+    nginx.ingress.kubernetes.io/upstream-healthcheck-healthy-threshold: "2"
+    nginx.ingress.kubernetes.io/upstream-fail-timeout: "10s"
+    nginx.ingress.kubernetes.io/upstream-max-fails: "3"
+spec:
+  rules:
+  - host: page.tledtech.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: maintenance-service
+            port:
+              number: 80

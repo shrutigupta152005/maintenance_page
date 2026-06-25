@@ -1,0 +1,59 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Namespace for all resources
+namespace: maintenance
+
+# Resources to include
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - secret.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+
+# Common labels applied to all resources
+commonLabels:
+  app: maintenance-page
+  version: v1
+
+# Common annotations applied to all resources
+commonAnnotations:
+  managed-by: kustomize
+  environment: production
+
+# Images to manage
+images:
+  - name: maintenance-page
+    newName: 027265528423.dkr.ecr.us-east-1.amazonaws.com/maintenance-page
+    newTag: latest
+
+# Replicas override
+replicas:
+  - name: maintenance-page
+    count: 2
+
+# Vars for variable substitution
+vars:
+  - name: NAMESPACE
+    objref:
+      kind: Namespace
+      name: maintenance
+      apiVersion: v1
+    fieldref:
+      fieldpath: metadata.name
+  - name: SERVICE_NAME
+    objref:
+      kind: Service
+      name: maintenance-service
+      apiVersion: v1
+    fieldref:
+      fieldpath: metadata.name
+  - name: INGRESS_HOST
+    objref:
+      kind: Ingress
+      name: maintenance-ingress
+      apiVersion: networking.k8s.io/v1
+    fieldref:
+      fieldpath: spec.rules[0].host
