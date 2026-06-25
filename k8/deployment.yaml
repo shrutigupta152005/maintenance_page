@@ -4,7 +4,7 @@ metadata:
   name: maintenance-page
   namespace: maintenance
   labels:
-    app: maintenance-page
+    app: maintenance
     component: web
     environment: prod
 
