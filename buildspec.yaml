@@ -13,46 +13,14 @@ env:
 phases:
   install:
     commands:
-      - echo "Installing kubectl eksctl kustomize"
-      - |
-        if ! command -v kubectl >/dev/null 2>&1; then
-          curl -sSL --fail -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.24.10/2023-10-03/bin/linux/amd64/kubectl
-          chmod +x kubectl
-          mv kubectl /usr/local/bin/
-        fi
-      - |
-        if ! command -v eksctl >/dev/null 2>&1; then
-          curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-          mv /tmp/eksctl /usr/local/bin/
-        fi
-      - |
-        if ! command -v kustomize >/dev/null 2>&1; then
-          KUST_VER=v5.0.0
-          echo "Downloading kustomize ${KUST_VER}..."
-          curl -fsSL -o kustomize.tar.gz "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUST_VER}/kustomize_${KUST_VER}_linux_amd64.tar.gz" || true
-          if [ -f kustomize.tar.gz ]; then
-            tar -xzf kustomize.tar.gz || (echo "tar extract failed" >&2; exit 1)
-          else
-            curl -fsSL -o kustomize.bin "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUST_VER}/kustomize_${KUST_VER}_linux_amd64" || true
-          fi
-          if [ -f kustomize ]; then
-            chmod +x kustomize
-            mv kustomize /usr/local/bin/
-          elif [ -f kustomize.bin ]; then
-            chmod +x kustomize.bin
-            mv kustomize.bin /usr/local/bin/kustomize
-          else
-            echo "kustomize download failed" >&2
-            exit 1
-          fi
-        fi
+      - echo "Installing kubectl and eksctl"
+      - curl -sSL --fail -o /usr/local/bin/kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.24.10/2023-10-03/bin/linux/amd64/kubectl
+      - chmod +x /usr/local/bin/kubectl
+      - curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+      - mv /tmp/eksctl /usr/local/bin/
   pre_build:
     commands:
       - echo "Logging in to Amazon ECR"
-      - echo "Debug: STS identity"
-      - aws sts get-caller-identity || true
-      - echo "Debug: try to get ECR authorization token (will show permission error if any)"
-      - aws ecr get-authorization-token --region "$AWS_REGION" || true
       - aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
       - export IMAGE_TAG_SHA=${CODEBUILD_RESOLVED_SOURCE_VERSION:0:8}
       - export IMAGE_TAG_LATEST=latest
