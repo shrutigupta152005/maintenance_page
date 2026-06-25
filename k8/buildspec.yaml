@@ -1,10 +1,5 @@
 version: 0.2
-# Production-ready CodeBuild buildspec to build a Docker image, push to ECR,
-# update an EKS Deployment, wait for rollout and emit imagedefinitions.json.
-#
-# Notes:
-# - CodeBuild project must enable "Privileged" (to run Docker).
-# - Use CodeBuild environment variables to override defaults in your project.
+
 env:
   variables:
     AWS_REGION: us-east-1
@@ -16,14 +11,12 @@ env:
     DEPLOYMENT_NAME: "maintenance-page"
     CONTAINER_NAME: "maintenance-page"
     DOMAIN: "page.tledtech.com"
-    # Short SHA produced from CodeBuild runtime var below in build stage
 phases:
   install:
     runtime-versions:
       docker: 19
     commands:
       - echo "Install helpers: aws CLI v2, kubectl, eksctl (if missing)"
-      # aws CLI v2 is usually preinstalled on CodeBuild standard images.
       - |
         if ! command -v kubectl >/dev/null 2>&1; then
           echo "Installing kubectl..."
@@ -80,9 +73,3 @@ phases:
 artifacts:
   files:
     - imagedefinitions.json
-# Caches and secondary-artifacts can be added if desired.
-# Important operational notes (not executed by buildspec):
-# - Ensure the CodeBuild project has "Privileged" checked to allow Docker builds.
-# - Provide the CodeBuild service role the IAM policy included in project docs.
-# - Map the CodeBuild IAM role into the EKS cluster (see RBAC docs).
-# - Consider enabling Docker layer caching on the CodeBuild project for faster builds.
