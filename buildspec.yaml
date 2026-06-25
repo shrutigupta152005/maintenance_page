@@ -27,8 +27,24 @@ phases:
         fi
       - |
         if ! command -v kustomize >/dev/null 2>&1; then
-          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
-          mv kustomize /usr/local/bin/
+          KUST_VER=v5.0.0
+          echo "Downloading kustomize ${KUST_VER}..."
+          curl -fsSL -o kustomize.tar.gz "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUST_VER}/kustomize_${KUST_VER}_linux_amd64.tar.gz" || true
+          if [ -f kustomize.tar.gz ]; then
+            tar -xzf kustomize.tar.gz || (echo "tar extract failed" >&2; exit 1)
+          else
+            curl -fsSL -o kustomize.bin "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUST_VER}/kustomize_${KUST_VER}_linux_amd64" || true
+          fi
+          if [ -f kustomize ]; then
+            chmod +x kustomize
+            mv kustomize /usr/local/bin/
+          elif [ -f kustomize.bin ]; then
+            chmod +x kustomize.bin
+            mv kustomize.bin /usr/local/bin/kustomize
+          else
+            echo "kustomize download failed" >&2
+            exit 1
+          fi
         fi
   pre_build:
     commands:
